@@ -35,8 +35,8 @@ def load_checkpoint():
     return None
 
 
-def main():
-    """Run prime finding with configurable options."""
+def parse_arguments():
+    """Parse and return command line arguments."""
     parser = argparse.ArgumentParser(
         description="Benchmark prime finder with checkpointing support",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -88,7 +88,12 @@ Examples:
         help="Do not resume from checkpoint, start fresh"
     )
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    """Run prime finding with configurable options."""
+    args = parse_arguments()
 
     # Validate arguments
     if args.count and args.time != 300:
