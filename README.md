@@ -7,16 +7,20 @@ support for HPC clusters.
 
 ```bash
 # Check if a number is prime
-python prime_finder.py 17
+python -m src.prime_finder 17
 
 # Find all primes up to a limit
-python prime_finder.py -u 30
+python -m src.prime_finder -u 30
 
 # Find the first N primes
-python prime_finder.py -n 10
+python -m src.prime_finder -n 10
 
 # Run 5-minute performance benchmark
-python benchmark.py
+python -m benchmarks.benchmark
+
+# Submit to HPC cluster (SLURM)
+sbatch slurm/prime_finder.slurm
+sbatch slurm/prime_finder_checkpoint.slurm
 ```
 
 ## Features
@@ -26,6 +30,7 @@ python benchmark.py
 - **Find first N primes**: Generate the first N prime numbers
 - **Benchmarking**: 5-minute performance tests
 - **HPC checkpointing**: Resume from interruptions on SLURM clusters
+- **SLURM integration**: Job scripts for batch submission with auto-requeue
 
 ## Requirements
 
@@ -36,6 +41,7 @@ python benchmark.py
 - **[README](docs/README.md)** - Full usage guide and algorithm explanation
 - **[TESTING](docs/TESTING.md)** - Test suite documentation and performance metrics
 - **[CHECKPOINTING](docs/CHECKPOINTING.md)** - HPC cluster checkpointing implementation guide
+- **[SLURM Scripts](slurm/README.md)** - Job submission scripts and cluster integration
 
 ## Quick Performance Reference
 
@@ -72,20 +78,26 @@ python -m benchmarks.benchmark
 ```
 .
 ├── src/
-│   ├── __init__.py              # Package marker
-│   └── prime_finder.py           # Main module
+│   ├── __init__.py                   # Package marker
+│   ├── prime_finder.py               # Main module
+│   └── prime_finder_checkpoint.py    # Checkpointing wrapper
 ├── tests/
-│   └── test_prime_finder.py      # Unit tests (24 test cases)
+│   └── test_prime_finder.py          # Unit tests (24 test cases)
 ├── benchmarks/
-│   └── benchmark.py              # 5-minute performance benchmark
+│   └── benchmark.py                  # 5-minute performance benchmark
+├── slurm/
+│   ├── prime_finder.slurm            # Basic job script
+│   ├── prime_finder_checkpoint.slurm # Auto-requeue job script
+│   ├── QUICKSTART.sh                 # Quick command reference
+│   └── README.md                     # SLURM documentation
 ├── docs/
-│   ├── README.md                 # Full documentation
-│   ├── TESTING.md                # Testing guide
-│   └── CHECKPOINTING.md          # HPC cluster checkpointing guide
+│   ├── README.md                     # Full documentation
+│   ├── TESTING.md                    # Testing guide
+│   └── CHECKPOINTING.md              # HPC cluster checkpointing guide
 ├── .github/
 │   └── workflows/
-│       └── python-app.yml        # CI/CD with pylint, flake8, mdformat, pytest
-└── README.md                      # This file
+│       └── python-app.yml            # CI/CD with pylint, flake8, mdformat, pytest
+└── README.md                          # This file
 ```
 
 ## Algorithm
