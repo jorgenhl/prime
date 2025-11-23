@@ -27,24 +27,21 @@
 # Load Python environment
 module load python/3.10
 
-# Set working directory
-cd "$SLURM_SUBMIT_DIR"
-
-# Create checkpoint directory on persistent storage
-export CHECKPOINT_DIR="$HOME/prime_checkpoints"
+# Set working directory to $SCRATCH for checkpoint persistence
+# Use consistent directory so checkpoints persist across requeues
+export CHECKPOINT_DIR="$SCRATCH/prime_finder_main"
 mkdir -p "$CHECKPOINT_DIR"
 cd "$CHECKPOINT_DIR"
 
 # Print job info
 echo "Job ID: $SLURM_JOB_ID"
-echo "Submit directory: $SLURM_SUBMIT_DIR"
-echo "Checkpoint directory: $CHECKPOINT_DIR"
+echo "Working directory: $CHECKPOINT_DIR"
 echo "Time limit: $SLURM_TIME_MIN minutes"
 echo "=================="
 
-# Time limit is 5 minutes SLURM time minus 30s safety buffer (270s)
-# This ensures checkpoint saves before SLURM kills the job
-python "$SLURM_SUBMIT_DIR"/src/prime_finder_checkpoint.py 1000000 270
+# Run prime finder with checkpointing
+# Checkpoint automatically saves/loads from current directory
+python -m benchmarks.benchmark
 
-# Job will checkpoint at 4.5 minutes and SLURM will requeue it
+# Job will checkpoint after 5 minutes and SLURM will requeue it
 # On next submission, it resumes from saved checkpoint

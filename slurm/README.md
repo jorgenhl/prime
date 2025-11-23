@@ -6,22 +6,25 @@ SLURM.
 ## Quick Start
 
 ```bash
-# Submit basic job
+# Submit basic job to $SCRATCH
 sbatch prime_finder.slurm
 
-# Submit with checkpointing (for long-running jobs)
+# Submit with checkpointing (auto-requeue)
 sbatch prime_finder_checkpoint.slurm
 
 # Monitor jobs
 squeue -u $USER
-tail -f prime_*.log
+tail -f prime_ckpt_*.log
+
+# View checkpoint progress
+cat $SCRATCH/prime_finder_main/benchmark_checkpoint.json
 ```
 
 ## Job Scripts
 
 ### `prime_finder.slurm`
 
-Basic job script for finding primes.
+Basic job script for finding primes with checkpointing.
 
 **Configuration:**
 
@@ -29,6 +32,14 @@ Basic job script for finding primes.
 - CPUs: 4
 - Memory: 4 GB
 - Nodes: 1
+- **Working directory**: `$SCRATCH/prime_finder_$SLURM_JOB_ID/`
+
+**Features:**
+
+- Automatic checkpointing to `$SCRATCH`
+- Creates job-specific subdirectory for isolation
+- Resumes from checkpoint if interrupted
+- Available on all compute nodes
 
 **Usage:**
 
@@ -40,12 +51,13 @@ sbatch prime_finder.slurm
 
 - `prime_<job_id>.log` - Standard output
 - `prime_<job_id>.err` - Standard error
+- `$SCRATCH/prime_finder_<job_id>/benchmark_checkpoint.json` - Checkpoint state
 
 **Best for:**
 
-- Short-running jobs that fit within time limit
-- Testing and debugging
-- Small prime counts
+- Quick tests
+- Single 10-minute runs
+- Development and debugging
 
 ### `prime_finder_checkpoint.slurm`
 
@@ -58,13 +70,14 @@ Job script with checkpointing support for long-running jobs.
 - Memory: 4 GB
 - Nodes: 1
 - **Auto-requeue: Enabled**
+- **Working directory**: `$SCRATCH/prime_finder_main/`
 
 **Key Features:**
 
-- Automatically saves progress to `~/prime_checkpoints/`
+- Automatically saves progress to `$SCRATCH/prime_finder_main/`
 - Resumes from last checkpoint on timeout
-- Uses 4.5 minute time limit (with 30s safety buffer)
-- Searches for 1,000,000 primes (can be modified)
+- Uses same directory across requeues for persistent progress
+- Shared across all compute nodes via `$SCRATCH`
 
 **Usage:**
 
@@ -76,7 +89,7 @@ sbatch prime_finder_checkpoint.slurm
 
 - `prime_ckpt_<job_id>.log` - Standard output
 - `prime_ckpt_<job_id>.err` - Standard error
-- `~/prime_checkpoints/prime_checkpoint.json` - Checkpoint state
+- `$SCRATCH/prime_finder_main/benchmark_checkpoint.json` - Checkpoint state
 
 **Best for:**
 
@@ -161,13 +174,23 @@ Allow a held job to run.
 
 1. **Job starts** - Loads checkpoint if it exists, otherwise starts from 0
 1. **Periodic saves** - Every 1,000 primes, progress is saved
-1. **Timeout approach** - 30 seconds before time limit, job exits gracefully
+1. **Timeout approach** - Job completes after 5 minutes
 1. **Auto-requeue** - SLURM resubmits with `--requeue` flag
 1. **Resume** - Next job loads checkpoint and continues
 
-### Checkpoint File Format
+### Checkpoint Location
 
-Located at: `~/prime_checkpoints/prime_checkpoint.json`
+- **Basic job**: `$SCRATCH/prime_finder_<job_id>/benchmark_checkpoint.json`
+- **Checkpoint job**: `$SCRATCH/prime_finder_main/benchmark_checkpoint.json`
+
+Benefits of `$SCRATCH`:
+
+- Available on all compute nodes
+- Automatic cleanup by cluster (periodic purge)
+- Faster I/O than home directory
+- No quota limits
+
+### Checkpoint File Format
 
 ```json
 {
@@ -184,14 +207,14 @@ Located at: `~/prime_checkpoints/prime_checkpoint.json`
 ### Viewing Checkpoints
 
 ```bash
-# Check if checkpoint exists
-ls -lh ~/prime_checkpoints/prime_checkpoint.json
+# Check if checkpoint exists (basic job)
+ls -lh $SCRATCH/prime_finder_*/benchmark_checkpoint.json
 
-# View checkpoint contents
-cat ~/prime_checkpoints/prime_checkpoint.json
+# View checkpoint for auto-requeue job
+cat $SCRATCH/prime_finder_main/benchmark_checkpoint.json
 
-# Monitor progress live
-watch -n 1 'cat ~/prime_checkpoints/prime_checkpoint.json | python -m json.tool'
+# Watch progress live
+watch -n 5 'cat $SCRATCH/prime_finder_main/benchmark_checkpoint.json | python -m json.tool'
 ```
 
 ### Tracking Requeue Chain
@@ -209,39 +232,22 @@ sacct --format=JobID,JobName,State,Start,End,Elapsed
 ### Cleaning Up Checkpoints
 
 ```bash
-# Remove checkpoint file (careful - deletes progress!)
-rm ~/prime_checkpoints/prime_checkpoint.json
+# Remove checkpoint for basic job
+rm $SCRATCH/prime_finder_<job_id>/benchmark_checkpoint.json
+
+# Remove all basic job checkpoints
+rm -rf $SCRATCH/prime_finder_[0-9]*/
+
+# Remove auto-requeue checkpoint (careful - loses progress!)
+rm $SCRATCH/prime_finder_main/benchmark_checkpoint.json
 
 # Remove all checkpoints
-rm -rf ~/prime_checkpoints/
+rm -rf $SCRATCH/prime_finder_*/
 ```
 
 ## Customizing Scripts
 
-### Change Target Prime Count
-
-Edit `prime_finder_checkpoint.slurm`:
-
-```bash
-# Find this line:
-python "$SLURM_SUBMIT_DIR"/src/prime_finder_checkpoint.py 1000000 270
-
-# Change 1000000 to desired count:
-python "$SLURM_SUBMIT_DIR"/src/prime_finder_checkpoint.py 500000 270
-```
-
-### Increase Time Limit
-
-```bash
-#SBATCH --time=00:10:00  # 10 minutes
-```
-
-**Note:** If you increase time, also update the Python time argument:
-
-```bash
-# For 10 minute job, subtract 30s safety buffer = 570s
-python ... 1000000 570
-```
+Both scripts use the benchmark's built-in checkpointing. To modify behavior:
 
 ### Increase Memory
 
@@ -262,12 +268,12 @@ python ... 1000000 570
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Job won't start | Queue full | Wait or increase priority |
-| Job times out | Task too big | Reduce prime count or increase `--time` |
-| Checkpoint not saving | No write access | Check `~/prime_checkpoints/` permissions |
-| Job not requeuing | Missing `--requeue` flag | Add `#SBATCH --requeue` |
-| Lost progress | Checkpoint deleted | Clean interrupts only, use `--requeue` |
-| Slow progress | I/O bottleneck | Use local SSD for checkpoint dir |
+| Checkpoint not saving | No write access to `$SCRATCH` | Check `$SCRATCH` permissions |
+| Job not requeuing | Missing `--requeue` flag | Add `#SBATCH --requeue` to script |
+| Lost progress | Checkpoint deleted | Don't delete unless intentional |
+| Slow progress | I/O bottleneck | Check `$SCRATCH` performance |
 | Module not found | Python not loaded | Check `module load python/3.10` |
+| Permission denied | `$SCRATCH` access | Verify cluster `$SCRATCH` setup |
 
 ## Example Workflows
 
