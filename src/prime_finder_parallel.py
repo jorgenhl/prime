@@ -92,10 +92,14 @@ def find_n_primes_parallel(count, num_processes=None):
         upper_bound = int(upper_bound * 1.5)
 
 
-def main():
-    """Main entry point for the parallel prime finder script."""
+def parse_arguments():
+    """Parse command line arguments.
+
+    Returns:
+        Tuple of (command, value, num_processes)
+    """
+    num_cpus = cpu_count()
     if len(sys.argv) < 2:
-        num_cpus = cpu_count()
         print("Usage:")
         print("  python prime_finder_parallel.py <number> [--processes N]")
         print("    Check if a number is prime")
@@ -121,29 +125,46 @@ def main():
         sys.argv.pop(idx)
         sys.argv.pop(idx)
 
-    if sys.argv[1] == "-u":
-        if len(sys.argv) < 3:
+    command = sys.argv[1]
+    value = int(sys.argv[2]) if len(sys.argv) > 2 else None
+    return command, value, num_processes
+
+
+def execute_command(command, value, num_processes):
+    """Execute the prime finder command.
+
+    Args:
+        command: Command type ("-u", "-n", or number)
+        value: Value for the command
+        num_processes: Number of processes to use
+    """
+    if command == "-u":
+        if value is None:
             print("Error: -u requires a limit argument")
             sys.exit(1)
-        limit = int(sys.argv[2])
-        primes = find_primes_up_to_parallel(limit, num_processes)
-        print(f"Primes up to {limit}: {primes}")
+        primes = find_primes_up_to_parallel(value, num_processes)
+        print(f"Primes up to {value}: {primes}")
         print(f"Total: {len(primes)} primes")
 
-    elif sys.argv[1] == "-n":
-        if len(sys.argv) < 3:
+    elif command == "-n":
+        if value is None:
             print("Error: -n requires a count argument")
             sys.exit(1)
-        count = int(sys.argv[2])
-        primes = find_n_primes_parallel(count, num_processes)
-        print(f"First {count} primes: {primes}")
+        primes = find_n_primes_parallel(value, num_processes)
+        print(f"First {value} primes: {primes}")
 
     else:
-        num = int(sys.argv[1])
+        num = int(command)
         if is_prime(num):
             print(f"{num} is prime")
         else:
             print(f"{num} is not prime")
+
+
+def main():
+    """Main entry point for the parallel prime finder script."""
+    command, value, num_processes = parse_arguments()
+    execute_command(command, value, num_processes)
 
 
 if __name__ == "__main__":
