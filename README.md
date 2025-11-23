@@ -20,8 +20,11 @@ python -m src.prime_finder -u 30
 # Find the first N primes
 python -m src.prime_finder -n 10
 
-# Run 5-minute performance benchmark
-python -m benchmarks.benchmark
+# Run benchmarks
+python -m benchmarks.benchmark                    # 5-minute benchmark (default)
+python -m benchmarks.benchmark --time 60          # Run for 60 seconds
+python -m benchmarks.benchmark --count 100000     # Find first 100,000 primes
+python -m benchmarks.benchmark --no-resume        # Start fresh (ignore checkpoint)
 
 # Submit to HPC cluster (SLURM)
 sbatch slurm/prime_finder.slurm
@@ -39,10 +42,11 @@ sbatch slurm/prime_finder_checkpoint.slurm
 
 ### Performance & Benchmarking
 
-- **5-minute benchmarks**: Automated performance testing suite
+- **Flexible benchmarking**: Run for duration (default 5 minutes) or find specific prime count
+- **Checkpointing**: Resume benchmarks from saved progress in time-based mode
 - **Multi-core benchmarking**: Compare performance across 1, 2, 4, and 6 cores
 - **Detailed reporting**: JSON output with metrics and speedup analysis
-- **Checkpointing**: Resume benchmarks from saved progress
+- **CLI options**: Control mode, start point, and checkpoint behavior
 
 ### HPC & Cluster Features
 
@@ -96,7 +100,7 @@ See [Performance Metrics](docs/TESTING.md#performance-metrics) for details.
 ### Run Tests
 
 ```bash
-python -m pytest tests/test_prime_finder.py -v
+python -m pytest tests/ -v
 ```
 
 ### Run Linting
@@ -110,10 +114,17 @@ python -m flake8 src/ benchmarks/ tests/
 python -m mdformat docs/ README.md CONTRIBUTING.md --check
 ```
 
-### Running Benchmark
+### Running Benchmarks
 
 ```bash
+# Default: 5-minute benchmark with checkpoint resume
 python -m benchmarks.benchmark
+
+# Find 100,000 primes
+python -m benchmarks.benchmark --count 100000
+
+# See all options
+python -m benchmarks.benchmark --help
 ```
 
 ## Project Structure

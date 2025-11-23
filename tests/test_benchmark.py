@@ -2,15 +2,18 @@
 
 import json
 import os
+import sys
 import tempfile
 import unittest
-from unittest.mock import patch, MagicMock
-import sys
+from unittest.mock import patch
 
 # Add benchmarks directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'benchmarks'))
 
+# pylint: disable=wrong-import-position
+# flake8: noqa: E402
 from benchmark import save_checkpoint, load_checkpoint, CHECKPOINT_FILE
+# pylint: enable=wrong-import-position
 
 
 class TestCheckpoint(unittest.TestCase):
@@ -31,7 +34,6 @@ class TestCheckpoint(unittest.TestCase):
     @patch('benchmark.time.time')
     def test_save_checkpoint(self, mock_time, mock_checkpoint_file):
         """Test saving checkpoint to file."""
-        mock_checkpoint_file.return_value = os.path.join(self.test_dir, 'checkpoint.json')
         mock_time.return_value = 1234567890.5
 
         checkpoint_path = os.path.join(self.test_dir, 'checkpoint.json')
@@ -112,9 +114,9 @@ class TestBenchmarkArguments(unittest.TestCase):
         mock_find_n_primes.return_value = [2, 3, 5, 7]
         with patch('benchmark.load_checkpoint', return_value=None):
             with patch('benchmark.time.time', side_effect=[0, 10]):
-                from benchmark import main
-                # Would run but we're just testing arg parsing
-                # This is more of an integration test
+                # Testing argument parsing without running main
+                # More of a placeholder for integration testing
+                pass
 
     @patch('benchmark.find_n_primes')
     @patch('sys.argv', ['benchmark.py', '--count', '100'])
@@ -158,7 +160,7 @@ class TestBenchmarkIntegration(unittest.TestCase):
     @patch('benchmark.CHECKPOINT_FILE')
     @patch('benchmark.find_n_primes')
     @patch('benchmark.time.time')
-    def test_resume_from_checkpoint(self, mock_time, mock_find_n_primes, mock_checkpoint_file):
+    def test_resume_from_checkpoint(self, mock_time, mock_find_n_primes, _):
         """Test that benchmark correctly resumes from checkpoint."""
         checkpoint_path = os.path.join(self.test_dir, 'checkpoint.json')
 
@@ -172,7 +174,7 @@ class TestBenchmarkIntegration(unittest.TestCase):
             json.dump(checkpoint_data, f)
 
         # Mock time progression
-        time_values = [100.0 + 100.0, 100.0 + 101.0, 100.0 + 320.0]  # After elapsed
+        time_values = [100.0 + 100.0, 100.0 + 101.0, 100.0 + 320.0]
         mock_time.side_effect = time_values
         mock_find_n_primes.return_value = [2, 3, 5, 7]
 

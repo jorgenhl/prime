@@ -44,16 +44,16 @@ def main():
 Examples:
   python -m benchmark.benchmark
     Run for 5 minutes (default), resume from checkpoint if available
-  
+
   python -m benchmark.benchmark --time 60
     Run for 60 seconds, resume from checkpoint if available
-  
+
   python -m benchmark.benchmark --count 100000
     Find the first 100,000 primes
-  
+
   python -m benchmark.benchmark --start 50000
     Start calculating from 50,000 primes (no checkpoint)
-  
+
   python -m benchmark.benchmark --count 100000 --resume
     Find 100,000 primes, resume from checkpoint if available
         """
@@ -124,11 +124,11 @@ Examples:
 
     while True:
         count += batch_size
-        
+
         # Check if we should stop
         if mode == "count" and count >= args.count:
             count = args.count
-        
+
         primes = find_n_primes(count)
         elapsed = time.time() - start_time
 
