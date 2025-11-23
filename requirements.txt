@@ -1,0 +1,20 @@
+# Prime Finder - Python Dependencies
+# HPC exploration project for prime number finding with SLURM integration
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Linting and Code Quality
+pylint>=2.17.0
+flake8>=6.0.0
+mdformat>=0.7.16
+
+# Development (optional)
+black>=23.7.0  # Code formatter (optional but recommended)
+mypy>=1.4.1    # Type checking (optional)
+
+# Optional: For advanced features (install with: pip install -r requirements.txt[dev])
+# jupyter>=1.0.0        # Jupyter notebooks for analysis
+# matplotlib>=3.7.0     # For plotting benchmark results
+# numpy>=1.24.0         # For efficient numerical operations
