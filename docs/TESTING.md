@@ -68,36 +68,36 @@ Tests for the `find_n_primes(count)` function that returns the first N primes.
 ### Run All Tests
 
 ```bash
-python -m pytest test_prime_finder.py -v
+python -m pytest tests/test_prime_finder.py -v
 ```
 
 Output:
 
 ```
-test_prime_finder.py::TestIsPrime::test_composite_numbers PASSED
-test_prime_finder.py::TestIsPrime::test_even_numbers PASSED
-test_prime_finder.py::TestIsPrime::test_large_composite PASSED
-test_prime_finder.py::TestIsPrime::test_large_prime PASSED
-test_prime_finder.py::TestIsPrime::test_negative_numbers PASSED
-test_prime_finder.py::TestIsPrime::test_small_primes PASSED
-test_prime_finder.py::TestIsPrime::test_two_is_prime PASSED
-test_prime_finder.py::TestIsPrime::test_zero_and_one PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_all_results_are_prime PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_no_composites_returned PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_one PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_ten PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_thirty PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_two PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_two_is_inclusive PASSED
-test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_zero PASSED
-test_prime_finder.py::TestFindNPrimes::test_all_results_are_prime PASSED
-test_prime_finder.py::TestFindNPrimes::test_correct_count_returned PASSED
-test_prime_finder.py::TestFindNPrimes::test_find_five_primes PASSED
-test_prime_finder.py::TestFindNPrimes::test_find_one_prime PASSED
-test_prime_finder.py::TestFindNPrimes::test_find_ten_primes PASSED
-test_prime_finder.py::TestFindNPrimes::test_find_zero_primes PASSED
-test_prime_finder.py::TestFindNPrimes::test_no_duplicates PASSED
-test_prime_finder.py::TestFindNPrimes::test_returns_first_primes_in_order PASSED
+tests/test_prime_finder.py::TestIsPrime::test_composite_numbers PASSED
+tests/test_prime_finder.py::TestIsPrime::test_even_numbers PASSED
+tests/test_prime_finder.py::TestIsPrime::test_large_composite PASSED
+tests/test_prime_finder.py::TestIsPrime::test_large_prime PASSED
+tests/test_prime_finder.py::TestIsPrime::test_negative_numbers PASSED
+tests/test_prime_finder.py::TestIsPrime::test_small_primes PASSED
+tests/test_prime_finder.py::TestIsPrime::test_two_is_prime PASSED
+tests/test_prime_finder.py::TestIsPrime::test_zero_and_one PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_all_results_are_prime PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_no_composites_returned PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_one PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_ten PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_thirty PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_two PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_two_is_inclusive PASSED
+tests/test_prime_finder.py::TestFindPrimesUpTo::test_primes_up_to_zero PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_all_results_are_prime PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_correct_count_returned PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_find_five_primes PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_find_one_prime PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_find_ten_primes PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_find_zero_primes PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_no_duplicates PASSED
+tests/test_prime_finder.py::TestFindNPrimes::test_returns_first_primes_in_order PASSED
 
 24 passed in 0.03s
 ```
@@ -105,19 +105,19 @@ test_prime_finder.py::TestFindNPrimes::test_returns_first_primes_in_order PASSED
 ### Run Specific Test Class
 
 ```bash
-python -m pytest test_prime_finder.py::TestIsPrime -v
+python -m pytest tests/test_prime_finder.py::TestIsPrime -v
 ```
 
 ### Run Specific Test
 
 ```bash
-python -m pytest test_prime_finder.py::TestIsPrime::test_small_primes -v
+python -m pytest tests/test_prime_finder.py::TestIsPrime::test_small_primes -v
 ```
 
 ### Run Using unittest
 
 ```bash
-python -m unittest test_prime_finder
+python -m unittest tests.test_prime_finder
 ```
 
 ## Code Quality
@@ -128,17 +128,18 @@ All code is linted with pylint and flake8:
 
 ```bash
 # Python linting
-python -m pylint prime_finder.py test_prime_finder.py
-python -m flake8 prime_finder.py test_prime_finder.py
+python -m pylint src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
+python -m flake8 src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
 
 # Markdown linting
-python -m mdformat --check README.md TESTING.md
+python -m mdformat --check README.md docs/README.md docs/TESTING.md docs/CHECKPOINTING.md
 ```
 
 **Status**: All checks passing
 
-- `prime_finder.py`: pylint 10.0/10, flake8 clean
-- `test_prime_finder.py`: pylint 10.0/10, flake8 clean
+- `src/prime_finder.py`: pylint 10.0/10, flake8 clean
+- `tests/test_prime_finder.py`: pylint 10.0/10, flake8 clean
+- `benchmarks/benchmark.py`: pylint 10.0/10, flake8 clean
 - Documentation: mdformat compliant (0 warnings)
 
 ## Test Coverage

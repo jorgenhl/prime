@@ -1,7 +1,7 @@
 """Unit tests for prime_finder module."""
 
 import unittest
-from prime_finder import is_prime, find_primes_up_to, find_n_primes
+from src.prime_finder import is_prime, find_primes_up_to, find_n_primes
 
 
 class TestIsPrime(unittest.TestCase):

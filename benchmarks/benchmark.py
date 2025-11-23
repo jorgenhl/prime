@@ -2,7 +2,7 @@
 """Benchmark prime finder performance over 5 minutes."""
 
 import time
-from prime_finder import find_n_primes
+from src.prime_finder import find_n_primes
 
 
 def main():

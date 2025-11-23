@@ -12,29 +12,29 @@ A simple Python script to find and check prime numbers with multiple search opti
 
 ```bash
 # Check if a number is prime
-python prime_finder.py <number>
+python -m src.prime_finder 17
 
 # Find all primes up to a limit
-python prime_finder.py -u <limit>
+python -m src.prime_finder -u 30
 
 # Find the first N primes
-python prime_finder.py -n <count>
+python -m src.prime_finder -n 10
 ```
 
 ### Examples
 
 ```bash
 # Check if 17 is prime
-python prime_finder.py 17
+python -m src.prime_finder 17
 # Output: 17 is prime
 
 # Find all primes up to 30
-python prime_finder.py -u 30
+python -m src.prime_finder -u 30
 # Output: Primes up to 30: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 # Total: 10 primes
 
 # Find the first 10 primes
-python prime_finder.py -n 10
+python -m src.prime_finder -n 10
 # Output: First 10 primes: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 ```
 

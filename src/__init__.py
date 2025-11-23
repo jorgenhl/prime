@@ -1,0 +1,1 @@
+"""Prime finder package."""

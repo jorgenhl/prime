@@ -30,7 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint Python with pylint
       run: |
-        pylint prime_finder.py test_prime_finder.py benchmark.py
+        pylint src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
     - name: Lint Python with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -42,4 +42,4 @@ jobs:
         mdformat --check README.md docs/README.md docs/TESTING.md docs/CHECKPOINTING.md
     - name: Test with pytest
       run: |
-        pytest test_prime_finder.py -v
+        pytest tests/test_prime_finder.py -v

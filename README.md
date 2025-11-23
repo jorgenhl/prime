@@ -50,37 +50,42 @@ See [Performance Metrics](docs/TESTING.md#performance-metrics) for details.
 ### Run Tests
 
 ```bash
-python -m pytest docs/test_prime_finder.py -v
+python -m pytest tests/test_prime_finder.py -v
 ```
 
 ### Run Linting
 
 ```bash
-python -m pylint prime_finder.py benchmark.py
-python -m flake8 prime_finder.py benchmark.py
-python -m mdformat --check docs/*.md
+python -m pylint src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
+python -m flake8 src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
+python -m mdformat --check docs/*.md README.md
 ```
 
 ### Running Benchmark
 
 ```bash
-python benchmark.py
+python -m benchmarks.benchmark
 ```
 
 ## Project Structure
 
 ```
 .
-├── prime_finder.py           # Main prime finder module
-├── benchmark.py              # 5-minute performance benchmark
-├── test_prime_finder.py       # Unit tests (24 test cases)
+├── src/
+│   ├── __init__.py              # Package marker
+│   └── prime_finder.py           # Main module
+├── tests/
+│   └── test_prime_finder.py      # Unit tests (24 test cases)
+├── benchmarks/
+│   └── benchmark.py              # 5-minute performance benchmark
 ├── docs/
-│   ├── README.md            # Full documentation
-│   ├── TESTING.md           # Testing guide
-│   └── CHECKPOINTING.md     # HPC cluster checkpointing guide
-└── .github/
-    └── workflows/
-        └── python-app.yml   # CI/CD with pylint, flake8, mdformat, pytest
+│   ├── README.md                 # Full documentation
+│   ├── TESTING.md                # Testing guide
+│   └── CHECKPOINTING.md          # HPC cluster checkpointing guide
+├── .github/
+│   └── workflows/
+│       └── python-app.yml        # CI/CD with pylint, flake8, mdformat, pytest
+└── README.md                      # This file
 ```
 
 ## Algorithm
