@@ -30,22 +30,57 @@ sbatch slurm/prime_finder_checkpoint.slurm
 
 ## Features
 
-- **Check if prime**: Verify whether a single number is prime
-- **Find primes up to limit**: Generate all prime numbers up to a specified value
-- **Find first N primes**: Generate the first N prime numbers
-- **Benchmarking**: 5-minute performance tests
-- **HPC checkpointing**: Resume from interruptions on SLURM clusters
-- **SLURM integration**: Job scripts for batch submission with auto-requeue
+### Core Functionality
+
+- **Single number check**: Verify whether a single number is prime
+- **Range search**: Generate all prime numbers up to a specified value
+- **First N primes**: Generate the first N prime numbers
+- **Both serial and parallel**: Single-threaded and multiprocessing implementations
+
+### Performance & Benchmarking
+
+- **5-minute benchmarks**: Automated performance testing suite
+- **Multi-core benchmarking**: Compare performance across 1, 2, 4, and 6 cores
+- **Detailed reporting**: JSON output with metrics and speedup analysis
+- **Checkpointing**: Resume benchmarks from saved progress
+
+### HPC & Cluster Features
+
+- **SLURM integration**: Job submission scripts for batch processing
+- **Checkpointing**: Resume from interruptions on SLURM clusters
+- **Auto-requeue**: Automatic job resubmission on timeout
+- **$SCRATCH support**: Cluster-accessible checkpoint storage
+- **Multiprocessing**: Parallel execution using Python's multiprocessing module
+
+### Quality Assurance
+
+- **Comprehensive tests**: Unit and integration test suite
+- **High code quality**: pylint 10.0/10, flake8 clean, mdformat verified
+- **Low cyclomatic complexity**: Functions designed for maintainability
+- **Full documentation**: Usage guides, API docs, and examples
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.10+
+- pip (for dependency installation)
+- pytest, pylint, flake8, mdformat (for development)
+
+See `requirements.txt` for full dependency list.
 
 ## Documentation
 
+Complete documentation is organized in the `/docs/` folder:
+
 - **[README](docs/README.md)** - Full usage guide and algorithm explanation
+- **[PARALLEL](docs/PARALLEL.md)** - Multiprocessing parallelization guide and performance analysis
 - **[TESTING](docs/TESTING.md)** - Test suite documentation and performance metrics
 - **[CHECKPOINTING](docs/CHECKPOINTING.md)** - HPC cluster checkpointing implementation guide
+- **[BENCHMARK_REPORT](docs/BENCHMARK_REPORT.md)** - Detailed benchmark results and analysis
+
+Additional resources:
+
+- **[CONTRIBUTING](CONTRIBUTING.md)** - Contribution guidelines and code standards
+- **[LICENSE](LICENSE)** - MIT License
 - **[SLURM Scripts](slurm/README.md)** - Job submission scripts and cluster integration
 
 ## Quick Performance Reference
@@ -67,9 +102,12 @@ python -m pytest tests/test_prime_finder.py -v
 ### Run Linting
 
 ```bash
-python -m pylint src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
-python -m flake8 src/prime_finder.py tests/test_prime_finder.py benchmarks/benchmark.py
-python -m mdformat --check docs/*.md README.md
+# Python linting
+python -m pylint src/ benchmarks/ tests/
+python -m flake8 src/ benchmarks/ tests/
+
+# Markdown linting
+python -m mdformat docs/ README.md CONTRIBUTING.md --check
 ```
 
 ### Running Benchmark
@@ -83,26 +121,34 @@ python -m benchmarks.benchmark
 ```
 .
 ├── src/
-│   ├── __init__.py                   # Package marker
-│   ├── prime_finder.py               # Main module
-│   └── prime_finder_checkpoint.py    # Checkpointing wrapper
+│   ├── __init__.py                      # Package marker
+│   ├── prime_finder.py                  # Serial implementation
+│   └── prime_finder_parallel.py         # Parallel (multiprocessing) implementation
 ├── tests/
-│   └── test_prime_finder.py          # Unit tests (24 test cases)
+│   └── test_prime_finder.py             # Unit tests
 ├── benchmarks/
-│   └── benchmark.py                  # 5-minute performance benchmark
+│   ├── benchmark.py                     # 5-minute serial benchmark
+│   ├── benchmark_parallel.py            # 5-minute parallel benchmark
+│   └── run_all_benchmarks.py            # Multi-core benchmark suite
 ├── slurm/
-│   ├── prime_finder.slurm            # Basic job script
-│   ├── prime_finder_checkpoint.slurm # Auto-requeue job script
-│   ├── QUICKSTART.sh                 # Quick command reference
-│   └── README.md                     # SLURM documentation
+│   ├── prime_finder.slurm               # Basic job script
+│   ├── prime_finder_checkpoint.slurm    # Auto-requeue job script
+│   ├── prime_finder_parallel.slurm      # Parallel job script
+│   ├── prime_finder_parallel_checkpoint.slurm  # Parallel auto-requeue
+│   └── README.md                        # SLURM documentation
 ├── docs/
-│   ├── README.md                     # Full documentation
-│   ├── TESTING.md                    # Testing guide
-│   └── CHECKPOINTING.md              # HPC cluster checkpointing guide
+│   ├── README.md                        # Full usage guide
+│   ├── PARALLEL.md                      # Parallelization guide
+│   ├── TESTING.md                       # Testing documentation
+│   ├── CHECKPOINTING.md                 # HPC checkpointing guide
+│   └── BENCHMARK_REPORT.md              # Benchmark analysis
 ├── .github/
 │   └── workflows/
-│       └── python-app.yml            # CI/CD with pylint, flake8, mdformat, pytest
-└── README.md                          # This file
+│       └── python-app.yml               # CI/CD pipeline
+├── CONTRIBUTING.md                      # Contribution guidelines
+├── LICENSE                              # MIT License
+├── requirements.txt                     # Python dependencies
+└── README.md                            # This file
 ```
 
 ## Algorithm
