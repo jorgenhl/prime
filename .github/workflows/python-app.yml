@@ -34,6 +34,7 @@ jobs:
     - name: Lint Python with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
+        export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # PEP 8 standard: max line length 79 characters
         flake8 . --count --max-complexity=10 --max-line-length=79 --statistics
@@ -42,4 +43,5 @@ jobs:
         mdformat --check README.md docs/README.md docs/TESTING.md docs/CHECKPOINTING.md
     - name: Test with pytest
       run: |
+        export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
         pytest tests/test_prime_finder.py -v
