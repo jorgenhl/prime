@@ -21,6 +21,34 @@ def select_command(cores):
     return ["python", "-m", "benchmarks.benchmark_parallel"]
 
 
+def extract_metric_value(line):
+    """Extract a single metric value from a line.
+
+    Args:
+        line: Line of text to parse
+
+    Returns:
+        Tuple of (metric_key, value) or None
+    """
+    try:
+        if "Total primes found:" in line:
+            val = line.split(':')[1].replace(',', '').strip()
+            return ('total_primes', int(val))
+        if "Largest prime:" in line:
+            val = line.split(':')[1].replace(',', '').strip()
+            return ('largest_prime', int(val))
+        if "Average rate:" in line and "primes/second" in line:
+            rate_str = line.split(':')[1].strip().split()[0]
+            return ('rate', float(rate_str))
+        if "Completed in" in line and "seconds" in line:
+            time_str = line.split("in")[1].split("seconds")[0].strip()
+            return ('time', float(time_str))
+    except (IndexError, ValueError):
+        pass
+
+    return None
+
+
 def extract_metrics(output):
     """Extract benchmark metrics from output.
 
@@ -34,30 +62,10 @@ def extract_metrics(output):
     lines = output.split('\n')
 
     for line in lines:
-        if "Total primes found:" in line:
-            try:
-                val = line.split(':')[1].replace(',', '').strip()
-                metrics['total_primes'] = int(val)
-            except (IndexError, ValueError):
-                pass
-        elif "Largest prime:" in line:
-            try:
-                val = line.split(':')[1].replace(',', '').strip()
-                metrics['largest_prime'] = int(val)
-            except (IndexError, ValueError):
-                pass
-        elif "Average rate:" in line and "primes/second" in line:
-            try:
-                rate_str = line.split(':')[1].strip().split()[0]
-                metrics['rate'] = float(rate_str)
-            except (IndexError, ValueError):
-                pass
-        elif "Completed in" in line and "seconds" in line:
-            try:
-                time_str = line.split("in")[1].split("seconds")[0].strip()
-                metrics['time'] = float(time_str)
-            except (IndexError, ValueError):
-                pass
+        result = extract_metric_value(line)
+        if result:
+            key, value = result
+            metrics[key] = value
 
     return metrics
 
