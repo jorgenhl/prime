@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+.eggs/
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Checkpoints
+benchmark_checkpoint.json
+prime_checkpoint.json
+
+# Output files from benchmark/runs
+prime_*.log
+prime_ckpt_*.log
+prime_ckpt_*.err
+prime_*.err
+benchmark_run_*.log
+
+# SLURM output
+slurm_*.out
+slurm_*.err
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Local environment files
+.env
+.env.local
