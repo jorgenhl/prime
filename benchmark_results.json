@@ -1,0 +1,46 @@
+[
+  {
+    "cores": 1,
+    "success": true,
+    "elapsed": 301.7038333415985,
+    "metrics": {
+      "time": 301.7,
+      "total_primes": 201000,
+      "largest_prime": 2764873,
+      "rate": 666.3
+    }
+  },
+  {
+    "cores": 2,
+    "success": true,
+    "elapsed": 301.1438817977905,
+    "metrics": {
+      "time": 301.1,
+      "total_primes": 153000,
+      "largest_prime": 2058871,
+      "rate": 508.2
+    }
+  },
+  {
+    "cores": 4,
+    "success": true,
+    "elapsed": 301.46225357055664,
+    "metrics": {
+      "time": 301.4,
+      "total_primes": 153000,
+      "largest_prime": 2058871,
+      "rate": 507.7
+    }
+  },
+  {
+    "cores": 6,
+    "success": true,
+    "elapsed": 301.4615271091461,
+    "metrics": {
+      "time": 301.4,
+      "total_primes": 153000,
+      "largest_prime": 2058871,
+      "rate": 507.7
+    }
+  }
+]
