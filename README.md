@@ -1,5 +1,10 @@
 # Prime Finder
 
+> **Note:** This repository is an exploration of High-Performance Computing (HPC) features
+> including SLURM integration, checkpointing, multiprocessing parallelization, and cluster
+> job management. While the prime finder is a fully functional tool, the primary purpose is
+> to demonstrate HPC patterns and best practices for computational research.
+
 A Python tool to find and check prime numbers with multiple modes and SLURM checkpointing
 support for HPC clusters.
 
