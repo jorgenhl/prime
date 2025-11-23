@@ -91,16 +91,8 @@ Examples:
     return parser.parse_args()
 
 
-def main():
-    """Run prime finding with configurable options."""
-    args = parse_arguments()
-
-    # Validate arguments
-    if args.count and args.time != 300:
-        print("Error: Cannot use both --time and --count options together.")
-        sys.exit(1)
-
-    # Determine start state
+def setup_benchmark(args):
+    """Setup benchmark state and print initial messages."""
     checkpoint = None
     if args.resume and args.start == 0:
         checkpoint = load_checkpoint()
@@ -108,9 +100,7 @@ def main():
     start_count = checkpoint["count"] if checkpoint else args.start
     start_elapsed = checkpoint["elapsed_time"] if checkpoint else 0
     start_time = time.time() - start_elapsed
-    batch_size = 1000
 
-    # Print mode
     if args.count:
         print(f"Finding the first {args.count:,} primes...")
     else:
@@ -123,33 +113,40 @@ def main():
         print(f"Starting from {args.start:,} primes...")
 
     print("=" * 60)
+    return start_count, start_time
 
+
+def run_benchmark_loop(start_count, start_time, args):
+    """Run the main benchmark loop and return results."""
+    batch_size = 1000
     count = start_count
     mode = "count" if args.count else "time"
 
     while True:
         count += batch_size
 
-        # Check if we should stop
         if mode == "count" and count >= args.count:
             count = args.count
 
         primes = find_n_primes(count)
         elapsed = time.time() - start_time
 
+        print(f"[{elapsed:6.1f}s] Found {count:7d} primes. "
+              f"Largest: {primes[-1]:7d}")
+
         if mode == "count":
-            print(f"[{elapsed:6.1f}s] Found {count:7d} primes. "
-                  f"Largest: {primes[-1]:7d}")
             if count >= args.count:
                 break
         else:
             save_checkpoint(count, elapsed)
-            print(f"[{elapsed:6.1f}s] Found {count:7d} primes. "
-                  f"Largest: {primes[-1]:7d}")
             if elapsed >= args.time:
                 break
 
-    elapsed = time.time() - start_time
+    return primes, elapsed
+
+
+def print_results(primes, elapsed):
+    """Print benchmark results."""
     print("=" * 60)
     print(f"\nCompleted in {elapsed:.1f} seconds")
     print(f"Total primes found: {len(primes):,}")
@@ -157,6 +154,19 @@ def main():
     print(f"Average rate: {len(primes) / elapsed:.1f} primes/second")
     print(f"\nFirst 10 primes: {primes[:10]}")
     print(f"Last 10 primes: {primes[-10:]}")
+
+
+def main():
+    """Run prime finding with configurable options."""
+    args = parse_arguments()
+
+    if args.count and args.time != 300:
+        print("Error: Cannot use both --time and --count options together.")
+        sys.exit(1)
+
+    start_count, start_time = setup_benchmark(args)
+    primes, elapsed = run_benchmark_loop(start_count, start_time, args)
+    print_results(primes, elapsed)
 
 
 if __name__ == "__main__":
