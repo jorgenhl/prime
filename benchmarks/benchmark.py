@@ -37,7 +37,8 @@ def main():
     """Run prime finding for 5 minutes and report progress."""
     checkpoint = load_checkpoint()
     start_count = checkpoint["count"] if checkpoint else 0
-    start_time = time.time()
+    start_elapsed = checkpoint["elapsed_time"] if checkpoint else 0
+    start_time = time.time() - start_elapsed  # Adjust start_time to account for previous runs
     batch_size = 1000
 
     if checkpoint:
