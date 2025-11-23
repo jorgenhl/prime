@@ -153,11 +153,6 @@ Examples:
     print(f"\nFirst 10 primes: {primes[:10]}")
     print(f"Last 10 primes: {primes[-10:]}")
 
-    # Clean up checkpoint on successful completion (only for time-based mode)
-    if mode == "time" and os.path.exists(CHECKPOINT_FILE):
-        os.remove(CHECKPOINT_FILE)
-        print("\nCheckpoint cleared (benchmark completed successfully)")
-
 
 if __name__ == "__main__":
     main()
