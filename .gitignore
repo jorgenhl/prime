@@ -37,6 +37,7 @@ htmlcov/
 # Checkpoints
 benchmark_checkpoint.json
 prime_checkpoint.json
+benchmark_parallel_checkpoint.json
 
 # Output files from benchmark/runs
 prime_*.log
@@ -44,6 +45,8 @@ prime_ckpt_*.log
 prime_ckpt_*.err
 prime_*.err
 benchmark_run_*.log
+benchmark_results.json
+benchmark_1core.txt
 
 # SLURM output
 slurm_*.out
